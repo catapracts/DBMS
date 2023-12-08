@@ -100,4 +100,8 @@ select * from employee order by job desc;
 
 select * from employee where salary>1500 order by salary desc;
 
+select dno ,ename from employee order by dno asc, ename desc;
 
+select dno ,ename from employee order by dno asc, ename asc;
+
+select job, dno ,ename from employee order by job asc, dno asc, ename asc;

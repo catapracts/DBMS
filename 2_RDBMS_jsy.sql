@@ -39,19 +39,6 @@ where job = 'MANAGER'
 order by ename desc;
 
 
---select * from employee;
---select * from department;
---
---select ename from employee 
---where job = 'MANAGER' and dno = (select dno 부서번호 from department)
---order by ename desc;
-
---select dno 부서번호, dname 부서명, loc 부서위치, ename 사원이름
---from department
---where ename = (select ename from employee where job = 'MANAGER')
---order by ename desc; -- ????????????????????
-
-
 --8. 다음은 복잡한 쿼리를 view 를 생성해서 단순화하고 view를 실행하시오 . 뷰(view) 명 :  v_join 
 --employee, department 테이블의 부서별로 최소 월급을 받는 사원이름(ename), 사원의 직책 (job), 부서명(dname), 
 --부서위치 (loc) 를 출력되 최소월급이 900이상 만 출력하세요. 단, 부서번호 20번은 제외하고 출력하세요. 
@@ -59,13 +46,11 @@ order by ename desc;
 --   
 --   - 답안 :  view 생성 구문, view 실행 구문 을 넣으세요. 
 
-create view v_join
-as select ename 사원이름, job 직책, dname 부서명, loc 부서위치, d.dno 부서번호
+create view v_join as select ename 사원이름, job 직책, dname 부서명, loc 부서위치, d.dno 부서번호
 from employee e join department d on e.dno  = d.dno 
 where salary in 
 (
-    select min(salary) from employee 
-    where dno <> 20 group by dno having min(salary) > 900 
+    select min(salary) from employee where dno <> 20 group by dno having min(salary) > 900 
 );
 
 select * from v_join;
@@ -74,7 +59,8 @@ select * from v_join;
 --9. 테이블 복사및 alter table 을 사용하여 복사한 원본 테이블과 같은 제약 조건을 추가 하시오 
 --   employee 테이블의 모든 컬럼과 값을 복사하여 EMP50 테이블을 생성하시오
 --   department 테이블의 모든 컬럼과 값을 복사하여 DEPT50 테이블을 생성하시오. 
---   원본 테이블에 부여된 제약조건을 복사된 테이블에도 부여 하시오 . 
+--   원본 테이블에 부여된 제약조건을 복사된 테이블에도 부여 하시오.
+
 create table EMP50  as select * from employee;
 create table DEPT50  as select * from department;
 
@@ -95,25 +81,10 @@ alter table DEPT50 add constraint FK_EMP50_DNO foreign key (dno) references DEPT
 insert into EMP50 ( eno, ename, job, manager, hiredate, salary, commission, dno )
 values ( 8181, '홍길동', '사무원', 7788 , sysdate, 1000 , 1000 , 20 );
 
-select * from EMP50;
+update EMP50 set commission = 50 where eno in(7369, 7566, 7698, 7782, 7788, 7839, 7876, 7900, 7902, 7934, 7844); 
 
-update EMP50 set commission = 50 
-where eno in(7369, 7566, 7698, 7782, 7788, 7839, 7876, 7900, 7902, 7934, 7844); 
-
-select * from EMP50;
-
-select * from DEPT50;
-
-update DEPT50
-set dname = '운영부', loc = '서울'
-where dno = 40;
-
-select * from DEPT50;
-
-select * from EMP50;
+update DEPT50 set dname = '운영부', loc = '서울' where dno = 40;
 
 delete EMP50 where eno in (7566, 7698, 7782);
-
-select * from EMP50;
 
 commit;
